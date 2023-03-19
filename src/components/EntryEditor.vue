@@ -2,13 +2,14 @@
 // import EmojiField from '@/components/EmojiField.vue'
 // import ArrowCircleRight from '@/components/ArrowCircleRight.vue'
 
-import type  Emoji  from '@/types/Emoji';
+import type Emoji from '@/types/Emoji';
 import type Entry from '@/types/Entry';
 
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
 const body = ref('')
 
+const textarea = ref<HTMLTextAreaElement | null>(null)
 
 const emoji = ref<Emoji | null>(null)
 
@@ -36,7 +37,7 @@ const handleTextInput = (e: Event) => {
 }
 
 const handleSubmit = () => {
-    emit('create',{
+    emit('create', {
         body: body.value,
         emoji: emoji.value,
         createdAt: new Date(),
@@ -48,12 +49,14 @@ const handleSubmit = () => {
     body.value = ''
     emoji.value = null
 }
+
+onMounted(() => textarea.value?.focus)
 </script>
 
 
 <template>
     <form class="entry-form" @submit.prevent="handleSubmit">
-        <textarea @keyup="handleTextInput" :value="body" placeholder="New Journal"></textarea>
+        <textarea @keyup="handleTextInput" ref="textarea" :value="body" placeholder="New Journal"></textarea>
         <!---EmojiField v-model=emoji-->
         <div class="entry-form-footer">
             <span>{{ charCount }} / {{ maxChars }}</span>
